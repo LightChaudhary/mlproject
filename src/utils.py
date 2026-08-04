@@ -8,6 +8,7 @@ import pandas as pd
 from src.exception import CustomException
 
 def save_object(file_path, obj):
+    """Serialize an object to disk with dill, creating parent dirs as needed."""
     try:
         dir_path = os.path.dirname(file_path)
         os.makedirs(dir_path, exist_ok=True)
