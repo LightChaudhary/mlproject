@@ -90,12 +90,14 @@ class ModelTrainer:
 
             model_report:dict=evaluate_models(X_train=x_train, y_train=y_train, X_test=x_test, y_test=y_test, models=models, params=params)
 
-            # To get the best model score from the dictionary
-            best_model_score = max(sorted(model_report.values()))
-            # To get best model name from the dictionary
-            best_model_name = list(model_report.keys())[
-                list(model_report.values()).index(best_model_score)
-            ]
+            print("Model Report:", model_report)
+            # Get the model with the highest test R2 score
+            best_model_name = max(
+                    model_report,
+                    key=lambda model: model_report[model]["test_r2"]
+                )
+
+            best_model_score = model_report[best_model_name]["test_r2"]
             best_model = models[best_model_name]
 
             if best_model_score < 0.6:
@@ -104,7 +106,7 @@ class ModelTrainer:
 
             save_object(
                 file_path=self.model_trainer_config.trained_model_file_path,
-                obj=best_model_name
+                obj=best_model
             )
 
             predicted = best_model.predict(x_test)
