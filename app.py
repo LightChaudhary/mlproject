@@ -34,6 +34,7 @@ def predict_datapoint():
 
         predict_pipeline=PredictPipeline()
         print(pred_df.dtypes)
+        print(pred_df)
         results=predict_pipeline.predict(pred_df)
         return render_template('home.html', results=round(results[0], 2))
 
