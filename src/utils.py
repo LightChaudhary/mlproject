@@ -2,9 +2,6 @@ import os
 import sys
 import dill
 
-import numpy as np
-import pandas as pd
-
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import r2_score
 
@@ -29,13 +26,11 @@ def evaluate_models(X_train, y_train, X_test, y_test, models, params):
     try:
         report = {}
 
-        for i in range (len(list(models))):
-            model = list(models.values())[i]
-            param = params[list(models.keys())[i]]
+        for model_name, model in models.items():
+            param = params[model_name]
 
             gs = GridSearchCV(model, param, cv=3)
             gs.fit(X_train, y_train) # Train model with GridSearchCV
-            # model.fit(X_train, y_train) # Train model
 
             model.set_params(**gs.best_params_) # Set model parameters to best found by GridSearchCV
             model.fit(X_train, y_train) # Train model with best parameters
@@ -46,8 +41,19 @@ def evaluate_models(X_train, y_train, X_test, y_test, models, params):
             train_model_score = r2_score(y_train, y_train_pred) # Calculate r2 score for training data
             test_model_score = r2_score(y_test, y_test_pred) # Calculate r2 score for test data
 
-            report[list(models.keys())[i]] = test_model_score # Store test r2 score in report
+            report[model_name] = {
+                'train_r2': train_model_score,
+                'test_r2': test_model_score
+            } # Store r2 scores in report
 
         return report
+    except Exception as e:
+        raise CustomException(e, sys)
+
+def load_object(file_path):
+    try:
+        with open(file_path, "rb") as file_obj:
+            return dill.load(file_obj)
+        
     except Exception as e:
         raise CustomException(e, sys)
