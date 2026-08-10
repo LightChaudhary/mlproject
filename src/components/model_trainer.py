@@ -90,7 +90,6 @@ class ModelTrainer:
 
             model_report:dict=evaluate_models(X_train=x_train, y_train=y_train, X_test=x_test, y_test=y_test, models=models, params=params)
 
-            print("Model Report:", model_report)
             # Get the model with the highest test R2 score
             best_model_name = max(
                     model_report,
