@@ -18,7 +18,7 @@ from src.utils import save_object
 class DataTransformationConfig:
     """Holds file paths for the data transformation stage artifacts."""
 
-    # Serialized preprocessor output path; loaded during interference.
+    # Serialized preprocessor output path; loaded during inference.
     preprocessor_obj_file_path=os.path.join('artifacts', 'preprocessor.pkl')
 
 class DataTransformation:
@@ -27,17 +27,17 @@ class DataTransformation:
     """
 
     def __init__(self):
-        # Load transformation config (artiface paths, parameters)
+        # Load transformation config (artifact paths, parameters)
         self.data_transformation_config=DataTransformationConfig()
 
     def get_data_transformer_object(self):
         """
-        Build and return the preprocessing pipleine for student performance data.
+        Build and return the preprocessing pipeline for student performance data.
 
-        Constructs separate pipleines for numerical and categorical features, then combines them into a single ColumnTransformer.
+        Constructs separate pipelines for numerical and categorical features, then combines them into a single ColumnTransformer.
 
         Returns:
-            CustomException: If pipeline construction fails.
+            ColumnTransformer: Configured preprocessing pipeline.
 
         Raises:
             CustomException: If pipeline construction fails.
@@ -52,7 +52,7 @@ class DataTransformation:
                 "test preparation course"
             ]
 
-            # Numerical: media imputation -> standard scaling
+            # Numerical: median imputation -> standard scaling
             num_pipeline = Pipeline(
                 steps=[
                     ("imputer", SimpleImputer(strategy="median")),
@@ -60,7 +60,7 @@ class DataTransformation:
                 ]
             )
 
-            # Categorical: mode imputation -> one-hot encoding -> scaling(no centering)
+            # Categorical: mode imputation -> one-hot encoding -> scaling (no centering)
             cat_pipeline = Pipeline(
                 steps=[
                     ("imputer", SimpleImputer(strategy="most_frequent")),
